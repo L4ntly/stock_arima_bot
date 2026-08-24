@@ -1,104 +1,86 @@
-# SanDisk (SNDK) Hisse Senedi Fiyat Tahmini & Zaman Serisi Analizi
+# Stock ARIMA Project - Hisse Senedi Fiyat Tahmini ve Telegram Botu
 
-Bu proje, **SanDisk (SNDK)** hisse senedinin tarihsel fiyat hareketlerini analiz ederek, **AutoARIMA (Otoregresif Entegre Hareketli Ortalama)** zaman serisi modeli ile kısa vadeli (7 iş günü) fiyat projeksiyonu üretir ve sonuçları interaktif bir grafik üzerinde sunar.
-
----
-
-## 📌 Proje Özeti
-
-Finansal piyasalardaki volatilite ve trend analizlerini otomatikleştirmek amacıyla geliştirilen bu uygulamada;
-1. **Yahoo Finance API** üzerinden son 2 yıla ait piyasa verileri çekilir.
-2. **AutoARIMA** algoritması ile zaman serisine en uygun hiperparametreler ((p, d, q) değerleri) otomatik olarak optimize edilir.
-3. Eğitilen model ile gelecek **7 iş günü** için kapanış fiyatı tahminleri hesaplanır.
-4. **Plotly** kütüphanesi kullanılarak geçmiş 30 günlük gerçekleşen veriler ve gelecek tahminleri etkileşimli biçimde görselleştirilir.
+Bu proje, **SanDisk (SNDK)** veya belirlenen hisse senetlerinin geçmiş fiyat hareketlerini analiz ederek **AutoARIMA (Otoregresif Entegre Hareketli Ortalama)** modeliyle 7 iş günlük fiyat projeksiyonu üretir. Elde edilen tahminler hem yerel ortamda interaktif olarak incelenebilir hem de Telegram botu aracılığıyla periyodik olarak otomatik raporlanabilir.
 
 ---
 
-## 🚀 Temel Özellikler
+## 📌 Özellikler
 
-- **Otomatik Veri Çekme:** `yfinance` aracılığıyla güncel borsa verilerine hızlı erişim.
-- **Otomatik Model Seçimi:** `pmdarima` ile manuel grid-search gerekmeksizin en düşük AIC/BIC skoruna sahip ARIMA modelinin tespiti.
-- **İş Gününe Uyarlı Zamanlama:** Hafta sonu borsa kapalılıklarını gözeten iş günü (`freq='B'`) takvimi ile tarih hizalama.
-- **İnteraktif Görselleştirme:** Yakınlaştırma (zoom), gezinme (pan) ve fare ile üzerine gelindiğinde değer inceleme (hover tooltip) imkânı sunan Plotly arayüzü.
-
----
-
-## 🛠️ Kullanılan Teknolojiler
-
-| Teknoloji / Kütüphane | Kullanım Amacı |
-| :--- | :--- |
-| **Python** | Temel programlama dili |
-| **yfinance** | Finansal veri akışı ve borsa geçmişi edinimi |
-| **pandas & numpy** | Zaman serisi manipülasyonu ve veri ön işleme |
-| **pmdarima & statsmodels** | Otomatik ARIMA modelleme ve istatistiksel tahminleme |
-| **Plotly** | İnteraktif veri görselleştirme |
+- **Otomatik Veri Çekme:** `yfinance` kullanılarak son 2 yıla ait borsa verileri alınır.
+- **Otomatik Model Optimizasyonu:** `pmdarima` (AutoARIMA) ile seriye en uygun parametreler ((p, d, q)) otomatik belirlenir.
+- **İş Günü Uyumlu Zamanlama:** Hafta sonlarını hariç tutan iş günü (`freq='B'`) takvimi ile gelecek 7 iş günü için kapanış fiyatı tahmini yapılır.
+- **Telegram Botu ile Otomatik Raporlama (`app.py`):**
+  - Arka planda `job_queue` zamanlayıcısı ile her 3 saatte bir otomatik çalışır.
+  - Tahmin grafiğini Matplotlib ile bellek üzerinde (RAM / BytesIO) oluşturup doğrudan Telegram sohbetine fotoğraf olarak iletir.
+- **Bulut / Keep-Alive Desteği (`app.py`):**
+  - Flask web sunucusu (Port 8080) entegrasyonu sayesinde Render gibi bulut platformlarında 7/24 aktif kalabilir.
+- **Yerel İnteraktif Analiz (`local_analiz.py`):**
+  - Model eğitim adımlarını konsolda detaylı gösterir.
+  - Plotly ile tarayıcıda yakınlaştırılabilir (zoom/pan) ve üzerine gelindiğinde değer gösteren interaktif grafik açar.
 
 ---
 
-## 📂 Proje Dizin Yapısı
+## 📂 Proje Yapısı
 
 ```text
 stock_arima_project/
 │
-├── app.py                      # Veri çekme, modelleme ve görselleştirme ana betiği
-├── sandisk_stock_prices.csv    # Örnek/yerel veri seti yedeği
+├── app.py                      # Telegram botu, Flask keep-alive ve otomatik zamanlanmış raporlama
+├── local_analiz.py             # Yerel çalıştırma için Plotly destekli interaktif analiz betiği
+├── sandisk_stock_prices.csv    # yfinance ile çekilen hisse senedi verisinin DataFrame hali
 ├── requirements.txt            # Proje bağımlılıkları listesi
 └── README.md                   # Proje dokümantasyonu
 ```
 
 ---
 
+## 🛠️ Kullanılan Teknolojiler
+
+| Kütüphane / Araç | Kullanım Amacı |
+| :--- | :--- |
+| **Python** | Ana programlama dili |
+| **yfinance** | Borsa geçmişi ve finansal veri çekimi |
+| **pmdarima & statsmodels** | Otomatik ARIMA zaman serisi modelleme |
+| **pandas & numpy** | Veri ön işleme ve zaman serisi manipülasyonu |
+| **python-telegram-bot** | Telegram üzerinden otomatik mesaj ve grafik gönderimi |
+| **matplotlib** | Telegram botu için grafik üretimi (BytesIO) |
+| **plotly** | Yerel analiz için interaktif grafik görselleştirme |
+| **Flask** | Bulut sunucularda keep-alive amacıyla çalışan hafif HTTP sunucusu |
+
+---
+
 ## ⚙️ Kurulum ve Çalıştırma
 
-### 1. Depoyu Klonlayın veya İndirin
-```bash
-git clone https://github.com/kullanici_adi/stock_arima_project.git
-cd stock_arima_project
-```
+### 1. Bağımlılıkları Yükleyin
 
-### 2. Sanal Ortam Oluşturun ve Aktif Edin (Önerilen)
-**Windows (PowerShell):**
-```powershell
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-```
-
-**macOS / Linux:**
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-### 3. Bağımlılıkları Yükleyin
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Uygulamayı Başlatın
+---
+
+### 2. Kullanım Seçenekleri
+
+#### A. Telegram Botu ve Otomatik Raporlama Modu
+`app.py` dosyasındaki Telegram ayarlarını (`TOKEN`, `CHAT_ID`, `TAKIP_EDILEN_HISSE`) kontrol edin veya güncelleyin:
+
 ```bash
 python app.py
 ```
+- Flask sunucusu arka planda başlar.
+- Telegram botu devreye girer ve her 3 saatte bir belirlenen hissenin güncel tahmin grafiğini Telegram'a gönderir.
 
-Betiği çalıştırdığınızda model eğitim adımları konsolda listelenecek ve ardından varsayılan tarayıcınızda interaktif tahmin grafiği açılacaktır.
+#### B. Yerel İnteraktif Analiz Modu
+Sonuçları doğrudan yerel ortamda ve tarayıcınızda görmek için:
 
----
-
-## 📊 Örnek Çıktı ve Akış
-
-```text
-Performing stepwise search to minimize aic
- ARIMA(2,1,2)(0,0,0)[0] intercept   : AIC=...
- ARIMA(0,1,0)(0,0,0)[0] intercept   : AIC=...
- ...
-Best model:  ARIMA(p,d,q)
+```bash
+python local_analiz.py
 ```
-
-Grafik üzerinde:
-- 🔵 **Son 30 Gün:** Gerçekleşen piyasa kapanış fiyatları.
-- 🔴 **Gelecek 7 Gün:** Model tarafından üretilen kesikli projeksiyon çizgisi ve hedef fiyat noktaları.
+- Konsolda ARIMA model arama adımlarını listeler.
+- Varsayılan tarayıcınızda interaktif Plotly grafiğini açar.
 
 ---
 
-## ⚠️ Yasal Uyarı / Disclaimer
+## ⚠️ Yasal Uyarı
 
-Bu proje yalnızca **eğitim, araştırma ve veri bilimi analitiği** amaçlarıyla geliştirilmiştir. Model tarafından üretilen tahminler **kesinlik içermez** ve herhangi bir şekilde **yatırım tavsiyesi (YTD)** niteliği taşımaz. Gerçek finansal kararlar alırken bağımsız profesyonel danışmanlık alınması önerilir.
+Bu projedeki analizler ve tahmin modelleri yalnızca **eğitim ve araştırma** amaçlıdır. Üretilen veriler kesinlik içermez ve **yatırım tavsiyesi (YTD)** niteliğinde değildir.
