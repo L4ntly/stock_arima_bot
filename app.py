@@ -27,9 +27,9 @@ warnings.filterwarnings("ignore")
 
 
 # kendi bilgilerin
-TOKEN = "8787860810:AAG1PFenC54Bul14tN-GSP515vPvXZA8h7s"
-CHAT_ID = "6491727161"
-TAKIP_EDILEN_HISSE = "SNDK"
+TOKEN = "BURAYA_BOT_TOKENINI_YAZ"
+CHAT_ID = "BURAYA_KENDI_CHAT_ID_NUMARANI_YAZ"
+TAKIP_EDILEN_HISSE = "HİSSE_SENEDİ_ADI"
 # ---------------------------
 
 async def otomatik_rapor_hazirla(context: ContextTypes.DEFAULT_TYPE):
