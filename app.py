@@ -4,7 +4,11 @@ import matplotlib.pyplot as plt
 import pmdarima as pm
 import warnings
 import io
+import os
+from dotenv import load_dotenv
 from telegram.ext import Application, ContextTypes
+
+load_dotenv()
 
 # -- Bulut Sunucu için sahte websitesi eklentisi (keep-alive) ---
 from flask import Flask
@@ -27,8 +31,8 @@ warnings.filterwarnings("ignore")
 
 
 # kendi bilgilerin
-TOKEN = "8787860810:AAG1PFenC54Bul14tN-GSP515vPvXZA8h7s"
-CHAT_ID = "6491727161"
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 TAKIP_EDILEN_HISSE = "SNDK"
 # ---------------------------
 
@@ -74,16 +78,22 @@ async def otomatik_rapor_hazirla(context: ContextTypes.DEFAULT_TYPE):
     except Exception as Hata:
         print(f"❌ Hata: {str(Hata)}")
 
-async def baslangic_gorevleri(application: Application):
+async def post_init(application: Application):
     period = 10800 # 3 saat
-    application.job_queue.run_repeating(otomatik_rapor_hazirla, interval=period, first=5)
-    print("⏰ Zamanlayıcı kuruldu!")
+    if application.job_queue:
+        application.job_queue.run_repeating(otomatik_rapor_hazirla, interval=period, first=5)
+        print("⏰ Zamanlayıcı başarıyla kuruldu!")
+    
 
 
 if __name__ == '__main__':
     keep_alive() # flask sunucusunu arka planda başlatma (Render için)
     print("🚀 Borsa Kahini Başlatılıyor...")
-    app = Application.builder().token(TOKEN).post_init(baslangic_gorevleri).build()
+
+    if not TOKEN:
+        raise ValueError("TELEGRAM_BOT_TOKEN bulunamadı! Lütfen .env dosyanızı kontrol ediniz.")
+    
+    app = Application.builder().token(TOKEN).post_init(post_init).build()
     app.run_polling()
 
 
