@@ -9,7 +9,7 @@ warnings.filterwarnings("ignore")
 
 ticker = yf.Ticker("SNDK")
 
-# son 2 yılı çek
+# son 2 yılı çek -
 history = ticker.history(period="2y")
 
 # veriyi oluştur
