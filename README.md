@@ -1,6 +1,6 @@
 # Stock ARIMA Project - Hisse Senedi Fiyat Tahmini ve Telegram Botu
 
-Bu proje, **SanDisk (SNDK)** veya belirlenen hisse senetlerinin geçmiş fiyat hareketlerini analiz ederek **AutoARIMA (Otoregresif Entegre Hareketli Ortalama)** modeliyle 7 iş günlük fiyat projeksiyonu üretir. Elde edilen tahminler hem yerel ortamda interaktif olarak incelenebilir hem de Telegram botu aracılığıyla periyodik olarak otomatik raporlanabilir.
+Bu proje, belirlenen hisse senetlerinin geçmiş fiyat hareketlerini analiz ederek **AutoARIMA (Otoregresif Entegre Hareketli Ortalama)** modeliyle 7 iş günlük fiyat projeksiyonu üretir. Elde edilen tahminler hem yerel ortamda interaktif olarak incelenebilir hem de Telegram botu aracılığıyla periyodik olarak otomatik raporlanabilir.
 
 ---
 
@@ -27,11 +27,8 @@ stock_arima_project/
 │
 ├── app.py                      # Telegram botu, Flask keep-alive ve otomatik zamanlanmış raporlama
 ├── local_analiz.py             # Yerel çalıştırma için Plotly destekli interaktif analiz betiği
-<<<<<<< HEAD
 ├── sandisk_stock_prices.csv    # yfinance ile çekilen hisse verisinin DataFrame hali
-=======
 ├── sandisk_stock_prices.csv    # yfinance ile çekilen hisse senedi verisinin DataFrame hali
->>>>>>> a8375df83d50c0017da3ac662f6a0643959ebefb
 ├── requirements.txt            # Proje bağımlılıkları listesi
 └── README.md                   # Proje dokümantasyonu
 ```

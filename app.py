@@ -31,16 +31,14 @@ warnings.filterwarnings("ignore")
 
 
 # kendi bilgilerin
-<<<<<<< HEAD
 TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 TAKIP_EDILEN_HISSE = "SNDK"
-=======
+
 TOKEN = "BURAYA_BOT_TOKENINI_YAZ"
 CHAT_ID = "BURAYA_KENDI_CHAT_ID_NUMARANI_YAZ"
 TAKIP_EDILEN_HISSE = "HİSSE_SENEDİ_ADI"
->>>>>>> a8375df83d50c0017da3ac662f6a0643959ebefb
-# ---------------------------
+
 
 async def otomatik_rapor_hazirla(context: ContextTypes.DEFAULT_TYPE):
     ticker = TAKIP_EDILEN_HISSE
@@ -94,10 +92,10 @@ async def post_init(application: Application):
 
 if __name__ == '__main__':
     keep_alive() # flask sunucusunu arka planda başlatma (Render için)
-    print("🚀 Borsa Kahini Başlatılıyor...")
+    print("🚀 Borsa App Başlatılıyor...")
 
     if not TOKEN:
-        raise ValueError("TELEGRAM_BOT_TOKEN bulunamadı! Lütfen .env dosyanızı kontrol ediniz.")
+        raise ValueError("TELEGRAM_BOT_TOKEN bulunamadı!")
     
     app = Application.builder().token(TOKEN).post_init(post_init).build()
     app.run_polling()
